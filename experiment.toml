@@ -1,0 +1,84 @@
+# Experiment configuration. Edit model IDs before running.
+# A provider is skipped if its model list is empty.
+
+[run]
+runs_per_condition = 20       # independent fresh calls per (model, condition, meal)
+max_workers = 4               # concurrent requests per provider
+max_tokens = 1024
+output = "results/raw.jsonl"
+
+# "default" sends no temperature (the provider's default sampling).
+# "t0" sends temperature = 0. If a model rejects temperature, the call is
+# recorded as unsupported rather than silently changed.
+conditions = ["default", "t0"]
+
+[analysis]
+# Scores of 50 or more count as "suitable", 49 or less as "not suitable".
+threshold = 49.5
+
+[prompt]
+template = """On a scale of 0 to 100, how suitable is {meal} for someone managing gallstones?
+
+Briefly explain your reasoning, then end your answer with a final line in exactly this format, where N is a whole number from 0 to 100:
+Score: N"""
+
+# Previous generation next to its current replacement, so the analysis can
+# compare how stable each generation's verdicts are.
+[providers.anthropic]
+models = ["claude-sonnet-4-6", "claude-sonnet-5-5", "claude-haiku-4-5-20251001", "claude-haiku-5-5"]
+
+[providers.openai]
+models = []   # e.g. fill in a current OpenAI model ID
+
+[providers.google]
+models = []   # e.g. fill in a current Gemini model ID
+
+# Meals and their categories are fixed BEFORE any data is collected,
+# so "borderline" is a prediction being tested, not a label fitted afterwards.
+[[meals]]
+name = "fried chicken"
+category = "clear_bad"
+
+[[meals]]
+name = "a double bacon cheeseburger with fries"
+category = "clear_bad"
+
+[[meals]]
+name = "deep fried fish and chips"
+category = "clear_bad"
+
+[[meals]]
+name = "steamed vegetables with plain brown rice"
+category = "clear_good"
+
+[[meals]]
+name = "oatmeal made with skim milk and topped with berries"
+category = "clear_good"
+
+[[meals]]
+name = "grilled skinless chicken breast with steamed broccoli"
+category = "clear_good"
+
+[[meals]]
+name = "a turkey sandwich with mayonnaise"
+category = "borderline"
+
+[[meals]]
+name = "a chicken Caesar salad"
+category = "borderline"
+
+[[meals]]
+name = "grilled salmon with white rice"
+category = "borderline"
+
+[[meals]]
+name = "avocado toast on whole wheat bread"
+category = "borderline"
+
+[[meals]]
+name = "scrambled eggs on toast"
+category = "borderline"
+
+[[meals]]
+name = "spaghetti bolognese"
+category = "borderline"

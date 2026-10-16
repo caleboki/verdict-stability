@@ -15,6 +15,12 @@ conditions = ["default", "t0"]
 [analysis]
 # Scores of 50 or more count as "suitable", 49 or less as "not suitable".
 threshold = 49.5
+verdict_label = "suitable"
+# Each older model next to its replacement, for the generation shift table.
+generation_pairs = [
+    ["claude-sonnet-4-6", "claude-sonnet-5-5"],
+    ["claude-haiku-4-5-20251001", "claude-haiku-5-5"],
+]
 
 [prompt]
 template = """On a scale of 0 to 100, how suitable is {meal} for someone managing gallstones?

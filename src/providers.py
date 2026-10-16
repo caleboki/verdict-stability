@@ -27,6 +27,9 @@ class Reply:
     stop_reason: str | None = None
     input_tokens: int | None = None
     output_tokens: int | None = None
+    # Hidden reasoning blocks in the response. Newer models think by default,
+    # which can change both the scores and their spread.
+    thinking_blocks: int | None = None
 
 
 class TemperatureUnsupported(Exception):
@@ -34,8 +37,10 @@ class TemperatureUnsupported(Exception):
 
 
 def _looks_like_temperature_error(exc: Exception) -> bool:
-    msg = str(exc).lower()
-    return "temperature" in msg and any(w in msg for w in ("unsupported", "not supported", "does not support", "invalid", "only the default"))
+    """Only called for a 400 on a request that set a temperature, so any
+    mention of temperature in the message means the model refused it. The
+    exact wording varies by provider and model, so no further match is needed."""
+    return "temperature" in str(exc).lower()
 
 
 def is_retryable(exc: Exception) -> bool:
@@ -59,7 +64,9 @@ def call_anthropic(model: str, prompt: str, temperature: float | None, max_token
     client = anthropic.Anthropic(max_retries=0)  # reads ANTHROPIC_API_KEY
     kwargs = {"model": model, "max_tokens": max_tokens, "messages": [{"role": "user", "content": prompt}]}
     if temperature is not None:
-        kwargs["temperature"] = temperature
+        # The 1.x SDK removed `temperature` from its signature, but the API
+        # still honours it on older models; newer ones reject it with a 400.
+        kwargs["extra_body"] = {"temperature": temperature}
     try:
         resp = client.messages.create(**kwargs)
     except anthropic.BadRequestError as exc:
@@ -67,13 +74,15 @@ def call_anthropic(model: str, prompt: str, temperature: float | None, max_token
             raise TemperatureUnsupported(str(exc)) from exc
         raise
     usage = getattr(resp, "usage", None)
+    types = [getattr(block, "type", None) for block in resp.content]
     return Reply(
-        # Keep only visible text blocks; ignore any thinking blocks.
+        # Keep only visible text blocks; thinking blocks are counted, not kept.
         text="".join(block.text for block in resp.content if getattr(block, "type", None) == "text"),
         served_model=getattr(resp, "model", None),
         stop_reason=getattr(resp, "stop_reason", None),
         input_tokens=getattr(usage, "input_tokens", None),
         output_tokens=getattr(usage, "output_tokens", None),
+        thinking_blocks=sum(t in ("thinking", "redacted_thinking") for t in types),
     )
 
 

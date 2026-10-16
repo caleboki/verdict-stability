@@ -24,9 +24,31 @@ CATEGORY_ORDER = ["clear_bad", "borderline", "clear_good"]
 ANSWERED = ["ok", "parse_failed", "truncated"]
 
 
+CALL_KEY = ["provider", "model", "condition", "meal", "run"]
+
+
 def load(path: Path) -> pd.DataFrame:
     rows = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
     return pd.DataFrame(rows)
+
+
+def latest_per_call(df: pd.DataFrame) -> pd.DataFrame:
+    """The runner appends a new row each time it retries a failed call, so
+    keep only the most recent row for each call. An error that a later run
+    answered then no longer counts as an error.
+
+    Once a model rejects temperature, the runner records that once and never
+    makes the rest of that condition's calls, so earlier errors there are
+    dropped too: those calls were never going to be answered."""
+    if df.empty:
+        return df
+    latest = df.sort_values("timestamp", kind="stable").drop_duplicates(CALL_KEY, keep="last")
+    combo = ["provider", "model", "condition"]
+    rejected = latest.loc[latest["status"] == "temperature_unsupported", combo].drop_duplicates()
+    if rejected.empty:
+        return latest
+    flagged = latest.merge(rejected.assign(_rejected=True), on=combo, how="left")["_rejected"].eq(True).to_numpy()
+    return latest[~(flagged & (latest["status"] == "error").to_numpy())]
 
 
 def wilson_interval(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
@@ -62,7 +84,7 @@ def per_meal(df: pd.DataFrame, threshold: float) -> pd.DataFrame:
             "modal_share": s.value_counts().iloc[0] / n,
             # Share of runs scoring above the threshold, with a 95% interval:
             # with 20 runs a single flip moves this by 0.05.
-            "p_suitable": p_above, "p_suitable_lo": lo, "p_suitable_hi": hi,
+            "p_above": p_above, "p_above_lo": lo, "p_above_hi": hi,
             # Share of runs landing on the minority side of the threshold.
             # 0 means every run gave the same verdict; 0.5 is a coin flip.
             "verdict_instability": min(p_above, 1 - p_above),
@@ -91,6 +113,74 @@ def rank_corr(summary: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def majority_vote_instability(p_above: float, k: int) -> float:
+    """Chance that a majority vote of k independent runs lands on the minority
+    side, given each run lands above the threshold with probability p_above.
+    k is odd so a vote cannot tie; k = 1 is the single-run instability."""
+    if k % 2 == 0:
+        raise ValueError("k must be odd")
+    q = sum(math.comb(k, j) * p_above**j * (1 - p_above) ** (k - j) for j in range(k // 2 + 1, k + 1))
+    return min(q, 1 - q)
+
+
+def voting_table(summary: pd.DataFrame, ks: tuple[int, ...] = (1, 3, 5, 9)) -> pd.DataFrame:
+    """Mean instability per model, condition and category if each verdict were
+    a majority vote of k runs. Uses each meal's observed p_above as the true
+    rate and assumes runs are independent, so it is an estimate, not a measurement."""
+    rows = []
+    for (model, cond, cat), g in summary.groupby(["model", "condition", "category"]):
+        row = {"model": model, "condition": cond, "category": cat}
+        for k in ks:
+            row[f"vote_of_{k}"] = g["p_above"].map(lambda p: majority_vote_instability(p, k)).mean()
+        rows.append(row)
+    out = pd.DataFrame(rows)
+    if len(out):
+        out["category"] = pd.Categorical(out["category"], CATEGORY_ORDER, ordered=True)
+        out = out.sort_values(["model", "condition", "category"])
+    return out
+
+
+def majority_verdict(p_above: float) -> str:
+    if p_above > 0.5:
+        return "above"
+    if p_above < 0.5:
+        return "below"
+    return "tie"
+
+
+def generation_shift(summary: pd.DataFrame, pairs: list[list[str]]) -> pd.DataFrame:
+    """Per meal, compare an older model with its replacement under the same
+    condition. A changed majority verdict is a change that resampling cannot
+    undo: it comes from where the scores centre, not from run-to-run noise."""
+    rows = []
+    for old, new in pairs:
+        a = summary[summary["model"] == old]
+        b = summary[summary["model"] == new]
+        merged = a.merge(b, on=["condition", "meal", "category"], suffixes=("_old", "_new"))
+        for _, r in merged.iterrows():
+            v_old, v_new = majority_verdict(r["p_above_old"]), majority_verdict(r["p_above_new"])
+            rows.append({
+                "old": old, "new": new, "condition": r["condition"], "meal": r["meal"],
+                "category": r["category"],
+                "mean_old": r["mean_old"], "mean_new": r["mean_new"],
+                "mean_change": r["mean_new"] - r["mean_old"],
+                "instability_old": r["verdict_instability_old"],
+                "instability_new": r["verdict_instability_new"],
+                "verdict_old": v_old, "verdict_new": v_new,
+                "verdict_changed": "tie" not in (v_old, v_new) and v_old != v_new,
+            })
+    return pd.DataFrame(rows)
+
+
+def output_prefix(path: Path) -> str:
+    """results/raw.jsonl -> "", results/monitor_raw.jsonl -> "monitor_",
+    results/mock_raw.jsonl -> "mock_", so each task's outputs keep their own names."""
+    stem = path.stem
+    if stem.endswith("raw"):
+        return stem.removesuffix("raw")
+    return f"{stem}_"
+
+
 def served_models(df: pd.DataFrame) -> pd.DataFrame:
     """Which model the API reports actually answered, per configured model ID."""
     if "served_model" not in df:
@@ -103,14 +193,20 @@ def served_models(df: pd.DataFrame) -> pd.DataFrame:
 def token_totals(df: pd.DataFrame) -> pd.DataFrame:
     if "output_tokens" not in df:
         return pd.DataFrame()
-    answered = df[df["status"].isin(ANSWERED)]
-    return (answered.groupby("model")
-            .agg(calls=("status", "size"), input_tokens=("input_tokens", "sum"),
-                 output_tokens=("output_tokens", "sum"), mean_output_tokens=("output_tokens", "mean"))
-            .round(1).reset_index())
+    answered = df[df["status"].isin(ANSWERED)].copy()
+    aggs = dict(calls=("status", "size"), input_tokens=("input_tokens", "sum"),
+                output_tokens=("output_tokens", "sum"), mean_output_tokens=("output_tokens", "mean"))
+    if "thinking_blocks" in answered:
+        # Share of answers that came with hidden reasoning, among calls where it
+        # was recorded (calls made before the field existed are left out).
+        known = answered["thinking_blocks"].notna()
+        answered["thought"] = (answered["thinking_blocks"] > 0).where(known)
+        aggs["share_with_thinking"] = ("thought", "mean")
+    return answered.groupby("model").agg(**aggs).round(2).reset_index()
 
 
-def plot_strip(df: pd.DataFrame, meals_order: list[str], threshold: float, path: Path) -> None:
+def plot_strip(df: pd.DataFrame, meals_order: list[str], threshold: float, path: Path,
+               labels: dict[str, str] | None = None) -> None:
     ok = df[df["score"].notna()]
     combos = list(ok.groupby(["model", "condition"]).groups)
     fig, axes = plt.subplots(len(combos), 1, figsize=(10, 3.2 * len(combos)), squeeze=False)
@@ -122,7 +218,7 @@ def plot_strip(df: pd.DataFrame, meals_order: list[str], threshold: float, path:
                 ax.scatter(i, score, s=18 + 14 * c, color="#3b6ea5", alpha=0.75)
         ax.axhline(threshold, color="#b23b3b", linestyle="--", linewidth=1)
         ax.set_xticks(range(len(meals_order)))
-        ax.set_xticklabels(meals_order, rotation=35, ha="right", fontsize=8)
+        ax.set_xticklabels([(labels or {}).get(m, m) for m in meals_order], rotation=35, ha="right", fontsize=8)
         ax.set_ylim(-3, 103)
         ax.set_ylabel("score")
         ax.set_title(f"{model}  |  {cond}  (marker size = number of runs)", fontsize=10)
@@ -155,24 +251,30 @@ def main() -> None:
 
     cfg = tomllib.loads(Path(args.config).read_text())
     threshold = cfg["analysis"]["threshold"]
+    label = cfg["analysis"].get("verdict_label", "above the threshold")
+    pairs = cfg["analysis"].get("generation_pairs", [])
     meals_order = [m["name"] for m in sorted(cfg["meals"], key=lambda m: CATEGORY_ORDER.index(m["category"]))]
 
     inp = Path(args.input)
-    prefix = "mock_" if inp.name.startswith("mock") else ""
-    df = load(inp)
+    prefix = output_prefix(inp)
+    df = latest_per_call(load(inp))
 
     status = df.groupby(["model", "condition", "status"]).size().rename("calls").reset_index()
     summary = per_meal(df, threshold)
     cats = per_category(summary)
     corr = rank_corr(summary)
+    votes = voting_table(summary)
+    shift = generation_shift(summary, pairs)
     served = served_models(df)
     tokens = token_totals(df)
 
     res, figs = ROOT / "results", ROOT / "figures"
     figs.mkdir(exist_ok=True)
     summary.round(3).to_csv(res / f"{prefix}summary_per_meal.csv", index=False)
+    if len(shift):
+        shift.round(3).to_csv(res / f"{prefix}generation_shift.csv", index=False)
     with open(res / f"{prefix}summary.md", "w") as fh:
-        fh.write(f"# Results summary\n\nThreshold: scores above {threshold} count as suitable.\n\n")
+        fh.write(f"# Results summary\n\nThreshold: scores above {threshold} count as {label}.\n\n")
         fh.write("## Call outcomes\n\n"
                  "`truncated` means the answer hit max_tokens before giving a score; "
                  "`parse_failed` covers missing, decimal or range scores.\n\n"
@@ -185,13 +287,29 @@ def main() -> None:
                  "meals scored near 0 or 100 have little room to vary, so part of any negative value "
                  "comes from the scale itself; the flip rates per meal are the stronger evidence.\n\n"
                  + (corr.to_markdown(index=False) if len(corr) else "_Not enough variation to compute._") + "\n\n")
+        fh.write("## What a majority vote would fix\n\n"
+                 "Mean chance that a verdict lands on the minority side if each verdict were a "
+                 "majority vote of k runs instead of one. Estimated from each meal's observed share "
+                 "of runs above the threshold, assuming runs are independent.\n\n"
+                 + (votes.round(3).to_markdown(index=False) if len(votes) else "_No data._") + "\n\n")
+        if pairs:
+            changed = shift[shift["verdict_changed"]] if len(shift) else shift
+            fh.write("## Generation shift\n\n"
+                     "Each older model against its replacement, per meal and condition. "
+                     "`verdict_changed` means the majority verdict moved to the other side of the threshold, "
+                     "which more runs per verdict cannot undo. Full table in "
+                     f"`{prefix}generation_shift.csv`.\n\n"
+                     + (f"{len(changed)} of {len(shift)} meal comparisons changed verdict.\n\n"
+                        + changed.round(2).to_markdown(index=False) if len(shift)
+                        else "_No meals were scored by both models in a pair._") + "\n\n")
         fh.write("## Per meal\n\n"
-                 "`p_suitable` is the share of runs above the threshold, with a 95% Wilson interval "
-                 "(`p_suitable_lo` to `p_suitable_hi`).\n\n"
+                 "`p_above` is the share of runs above the threshold, with a 95% Wilson interval "
+                 "(`p_above_lo` to `p_above_hi`).\n\n"
                  + summary.round(2).to_markdown(index=False) + "\n\n")
         if len(tokens):
             fh.write("## Tokens\n\n" + tokens.to_markdown(index=False) + "\n")
-    plot_strip(df, meals_order, threshold, figs / f"{prefix}scores_by_meal.png")
+    labels = {m["name"]: m.get("label", m["name"]) for m in cfg["meals"]}
+    plot_strip(df, meals_order, threshold, figs / f"{prefix}scores_by_meal.png", labels)
     plot_sd_vs_distance(summary, figs / f"{prefix}sd_vs_distance.png")
     print((res / f"{prefix}summary.md").read_text())
 

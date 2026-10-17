@@ -1,0 +1,25 @@
+old,new,condition,meal,category,mean_old,mean_new,mean_change,instability_old,instability_new,verdict_old,verdict_new,verdict_changed
+claude-sonnet-4-6,claude-sonnet-5-5,default,a chicken Caesar salad,borderline,34.35,47.85,13.5,0.0,0.45,below,below,False
+claude-sonnet-4-6,claude-sonnet-5-5,default,a double bacon cheeseburger with fries,clear_bad,2.05,6.8,4.75,0.0,0.0,below,below,False
+claude-sonnet-4-6,claude-sonnet-5-5,default,a turkey sandwich with mayonnaise,borderline,32.9,68.1,35.2,0.0,0.0,below,above,True
+claude-sonnet-4-6,claude-sonnet-5-5,default,avocado toast on whole wheat bread,borderline,34.7,70.85,36.15,0.0,0.0,below,above,True
+claude-sonnet-4-6,claude-sonnet-5-5,default,deep fried fish and chips,clear_bad,3.15,10.4,7.25,0.0,0.0,below,below,False
+claude-sonnet-4-6,claude-sonnet-5-5,default,fried chicken,clear_bad,4.15,11.5,7.35,0.0,0.0,below,below,False
+claude-sonnet-4-6,claude-sonnet-5-5,default,grilled salmon with white rice,borderline,58.05,78.35,20.3,0.15,0.0,above,above,False
+claude-sonnet-4-6,claude-sonnet-5-5,default,grilled skinless chicken breast with steamed broccoli,clear_good,92.1,90.5,-1.6,0.0,0.0,above,above,False
+claude-sonnet-4-6,claude-sonnet-5-5,default,oatmeal made with skim milk and topped with berries,clear_good,90.5,92.1,1.6,0.0,0.0,above,above,False
+claude-sonnet-4-6,claude-sonnet-5-5,default,scrambled eggs on toast,borderline,45.6,67.45,21.85,0.3,0.0,below,above,True
+claude-sonnet-4-6,claude-sonnet-5-5,default,spaghetti bolognese,borderline,27.6,56.85,29.25,0.0,0.0,below,above,True
+claude-sonnet-4-6,claude-sonnet-5-5,default,steamed vegetables with plain brown rice,clear_good,89.4,85.05,-4.35,0.0,0.0,above,above,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,a chicken Caesar salad,borderline,35.5,29.0,-6.5,0.0,0.0,below,below,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,a double bacon cheeseburger with fries,clear_bad,7.25,5.05,-2.2,0.0,0.0,below,below,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,a turkey sandwich with mayonnaise,borderline,27.55,46.5,18.95,0.0,0.4,below,below,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,avocado toast on whole wheat bread,borderline,29.4,80.05,50.65,0.0,0.0,below,above,True
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,deep fried fish and chips,clear_bad,7.9,6.95,-0.95,0.0,0.0,below,below,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,fried chicken,clear_bad,11.5,5.1,-6.4,0.0,0.0,below,below,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,grilled salmon with white rice,borderline,54.9,75.85,20.95,0.2,0.0,above,above,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,grilled skinless chicken breast with steamed broccoli,clear_good,85.45,90.6,5.15,0.0,0.0,above,above,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,oatmeal made with skim milk and topped with berries,clear_good,80.6,89.8,9.2,0.0,0.0,above,above,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,scrambled eggs on toast,borderline,31.4,68.25,36.85,0.0,0.0,below,above,True
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,spaghetti bolognese,borderline,24.2,47.0,22.8,0.0,0.4,below,below,False
+claude-haiku-4-5-20251001,claude-haiku-5-5,default,steamed vegetables with plain brown rice,clear_good,81.0,89.5,8.5,0.0,0.0,above,above,False

@@ -89,6 +89,7 @@ def one_call(provider: str, model: str, condition: str, meal: dict, run: int, pr
             status=classify(score, reply.stop_reason), text=reply.text, score=score,
             served_model=reply.served_model, stop_reason=reply.stop_reason,
             input_tokens=reply.input_tokens, output_tokens=reply.output_tokens,
+            thinking_blocks=reply.thinking_blocks,
             latency_s=round(time.monotonic() - started, 3), attempts=attempt,
         )
         return record
@@ -119,7 +120,8 @@ def main() -> None:
 
     cfg = load_config(Path(args.config))
     runs = args.runs or cfg["run"]["runs_per_condition"]
-    out = ROOT / ("results/mock_raw.jsonl" if args.mock else cfg["run"]["output"])
+    configured = Path(cfg["run"]["output"])
+    out = ROOT / (configured.with_name(f"mock_{configured.name}") if args.mock else configured)
     out.parent.mkdir(parents=True, exist_ok=True)
 
     providers = {"mock": ["mock-model"]} if args.mock else {
@@ -146,7 +148,7 @@ def main() -> None:
     written: list[dict] = []
     with open(out, "a") as fh, ThreadPoolExecutor(max_workers=cfg["run"]["max_workers"] * len(providers)) as pool:
         futures = {
-            pool.submit(one_call, p, m, c, meal, r, cfg["prompt"]["template"].format(meal=meal["name"]), cfg["run"]["max_tokens"]): (p, m, c)
+            pool.submit(one_call, p, m, c, meal, r, cfg["prompt"]["template"].format(meal=meal["name"], item=meal["name"]), cfg["run"]["max_tokens"]): (p, m, c)
             for p, m, c, meal, r in jobs
         }
         for i, fut in enumerate(as_completed(futures), 1):

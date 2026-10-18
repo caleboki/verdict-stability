@@ -82,6 +82,13 @@ def test_unreadable_score_is_parse_failed(monkeypatch):
     assert rec["status"] == "parse_failed" and rec["score"] is None
 
 
+def test_refusal_is_refused_not_parse_failed(monkeypatch):
+    fake_provider(monkeypatch, lambda n: Reply("", stop_reason="refusal", output_tokens=0, refusal_category="cyber"))
+    rec = run_experiment.one_call("fake", "m", "default", MEAL, 0, "p", 100)
+    assert rec["status"] == "refused" and rec["score"] is None
+    assert rec["refusal_category"] == "cyber"
+
+
 def test_rate_limit_is_retried_until_it_succeeds(monkeypatch):
     def behaviour(n):
         if n < 3:
@@ -126,6 +133,7 @@ def test_read_progress_retries_errors_and_remembers_unsupported(tmp_path):
         {"provider": "a", "model": "m", "condition": "default", "meal": "x", "run": 0, "status": "ok"},
         {"provider": "a", "model": "m", "condition": "default", "meal": "x", "run": 1, "status": "error"},
         {"provider": "a", "model": "m", "condition": "default", "meal": "x", "run": 2, "status": "truncated"},
+        {"provider": "a", "model": "m", "condition": "default", "meal": "x", "run": 3, "status": "refused"},
         {"provider": "a", "model": "m", "condition": "t0", "meal": "x", "run": 0, "status": "temperature_unsupported"},
     ]
     path = tmp_path / "raw.jsonl"
@@ -136,4 +144,5 @@ def test_read_progress_retries_errors_and_remembers_unsupported(tmp_path):
     assert ("a", "m", "default", "x", 0) in done
     assert ("a", "m", "default", "x", 1) not in done
     assert ("a", "m", "default", "x", 2) in done
+    assert ("a", "m", "default", "x", 3) in done
     assert unsupported == {("a", "m", "t0")}

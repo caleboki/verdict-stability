@@ -21,7 +21,7 @@ import pandas as pd  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATEGORY_ORDER = ["clear_bad", "borderline", "clear_good"]
-ANSWERED = ["ok", "parse_failed", "truncated"]
+ANSWERED = ["ok", "parse_failed", "truncated", "refused"]
 
 
 CALL_KEY = ["provider", "model", "condition", "meal", "run"]
@@ -49,6 +49,37 @@ def latest_per_call(df: pd.DataFrame) -> pd.DataFrame:
         return latest
     flagged = latest.merge(rejected.assign(_rejected=True), on=combo, how="left")["_rejected"].eq(True).to_numpy()
     return latest[~(flagged & (latest["status"] == "error").to_numpy())]
+
+
+def mark_refusals(df: pd.DataFrame) -> pd.DataFrame:
+    """Rows the API ended as a refusal carry no score. The runner now records
+    them as "refused"; rows collected before it did were filed as parse
+    failures, so relabel those from their recorded stop reason."""
+    if df.empty or "stop_reason" not in df:
+        return df
+    out = df.copy()
+    out.loc[(out["status"] == "parse_failed") & (out["stop_reason"] == "refusal"), "status"] = "refused"
+    return out
+
+
+def refusals(df: pd.DataFrame) -> pd.DataFrame:
+    """Refused calls per (model, condition, meal), for every meal with any."""
+    answered = df[df["status"].isin(ANSWERED)]
+    if answered.empty:
+        return pd.DataFrame()
+    refused_rows = answered[answered["status"] == "refused"]
+    cat = "refusal_category" in refused_rows and refused_rows["refusal_category"].notna().any()
+    if cat:
+        reason = (refused_rows.groupby(["model", "condition", "meal"])["refusal_category"]
+                  .agg(lambda s: ", ".join(sorted(s.dropna().unique())) or "unknown"))
+    out = (answered.assign(_refused=answered["status"].eq("refused"))
+           .groupby(["model", "condition", "meal", "category"])
+           .agg(calls=("status", "size"), refused=("_refused", "sum"))
+           .reset_index())
+    out = out[out["refused"] > 0].reset_index(drop=True)
+    if cat:
+        out["refusal_category"] = out.apply(lambda r: reason.get((r["model"], r["condition"], r["meal"]), ""), axis=1)
+    return out
 
 
 def wilson_interval(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
@@ -79,6 +110,7 @@ def per_meal(df: pd.DataFrame, threshold: float) -> pd.DataFrame:
             "n": n,
             "parse_failures": int((g["status"] == "parse_failed").sum()),
             "truncated": int((g["status"] == "truncated").sum()),
+            "refusals": int((g["status"] == "refused").sum()),
             "mean": s.mean(), "sd": s.std(ddof=1) if n > 1 else 0.0,
             "min": s.min(), "max": s.max(), "distinct_scores": s.nunique(),
             "modal_share": s.value_counts().iloc[0] / n,
@@ -212,11 +244,16 @@ def plot_strip(df: pd.DataFrame, meals_order: list[str], threshold: float, path:
     fig, axes = plt.subplots(len(combos), 1, figsize=(10, 3.2 * len(combos)), squeeze=False)
     for ax, (model, cond) in zip(axes[:, 0], combos):
         g = ok[(ok["model"] == model) & (ok["condition"] == cond)]
+        refused = df[(df["model"] == model) & (df["condition"] == cond) & (df["status"] == "refused")]
         for i, meal in enumerate(meals_order):
             counts = g[g["meal"] == meal]["score"].astype(int).value_counts()
+            if counts.empty and (refused["meal"] == meal).any():
+                ax.text(i, threshold, "refused", ha="center", va="center", rotation=90, color="#777777", fontsize=8)
             for score, c in counts.items():
                 ax.scatter(i, score, s=18 + 14 * c, color="#3b6ea5", alpha=0.75)
         ax.axhline(threshold, color="#b23b3b", linestyle="--", linewidth=1)
+        # The same range on every panel, so a meal with no scores (all refused) keeps its slot.
+        ax.set_xlim(-0.6, len(meals_order) - 0.4)
         ax.set_xticks(range(len(meals_order)))
         ax.set_xticklabels([(labels or {}).get(m, m) for m in meals_order], rotation=35, ha="right", fontsize=8)
         ax.set_ylim(-3, 103)
@@ -257,9 +294,10 @@ def main() -> None:
 
     inp = Path(args.input)
     prefix = output_prefix(inp)
-    df = latest_per_call(load(inp))
+    df = mark_refusals(latest_per_call(load(inp)))
 
     status = df.groupby(["model", "condition", "status"]).size().rename("calls").reset_index()
+    refused = refusals(df)
     summary = per_meal(df, threshold)
     cats = per_category(summary)
     corr = rank_corr(summary)
@@ -277,8 +315,15 @@ def main() -> None:
         fh.write(f"# Results summary\n\nThreshold: scores above {threshold} count as {label}.\n\n")
         fh.write("## Call outcomes\n\n"
                  "`truncated` means the answer hit max_tokens before giving a score; "
-                 "`parse_failed` covers missing, decimal or range scores.\n\n"
+                 "`parse_failed` covers missing, decimal or range scores; "
+                 "`refused` means the API ended the answer as a refusal, with no score.\n\n"
                  + status.to_markdown(index=False) + "\n\n")
+        if len(refused):
+            fh.write("## Refusals\n\n"
+                     "Calls the model refused to score, per meal. Where every run was refused there is "
+                     "no score, so that meal is missing from that model's per meal, category, vote and "
+                     "generation shift tables below.\n\n"
+                     + refused.to_markdown(index=False) + "\n\n")
         if len(served):
             fh.write("## Models as reported by the API\n\n" + served.to_markdown(index=False) + "\n\n")
         fh.write("## By category\n\n" + cats.round(3).to_markdown(index=False) + "\n\n")

@@ -30,6 +30,9 @@ class Reply:
     # Hidden reasoning blocks in the response. Newer models think by default,
     # which can change both the scores and their spread.
     thinking_blocks: int | None = None
+    # On a refusal, the policy category the API reports (for example "cyber"),
+    # which separates a safety filter blocking the request from the model declining.
+    refusal_category: str | None = None
 
 
 class TemperatureUnsupported(Exception):
@@ -75,6 +78,8 @@ def call_anthropic(model: str, prompt: str, temperature: float | None, max_token
         raise
     usage = getattr(resp, "usage", None)
     types = [getattr(block, "type", None) for block in resp.content]
+    # stop_details is informational and may be missing even on a refusal.
+    stop_details = getattr(resp, "stop_details", None)
     return Reply(
         # Keep only visible text blocks; thinking blocks are counted, not kept.
         text="".join(block.text for block in resp.content if getattr(block, "type", None) == "text"),
@@ -83,6 +88,7 @@ def call_anthropic(model: str, prompt: str, temperature: float | None, max_token
         input_tokens=getattr(usage, "input_tokens", None),
         output_tokens=getattr(usage, "output_tokens", None),
         thinking_blocks=sum(t in ("thinking", "redacted_thinking") for t in types),
+        refusal_category=getattr(stop_details, "category", None),
     )
 
 

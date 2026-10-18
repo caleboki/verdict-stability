@@ -32,7 +32,10 @@ MAX_ATTEMPTS = 4
 
 # Statuses that are a final answer for that call. "error" is not: those calls
 # are retried on the next run instead of silently shrinking the sample.
-FINAL_STATUSES = {"ok", "parse_failed", "truncated", "temperature_unsupported"}
+FINAL_STATUSES = {"ok", "parse_failed", "truncated", "refused", "temperature_unsupported"}
+
+# Stop reasons meaning the model declined to answer, so no score was ever given.
+REFUSAL_REASONS = {"refusal"}
 
 
 def load_config(path: Path) -> dict:
@@ -59,6 +62,8 @@ def read_progress(path: Path) -> tuple[set[tuple], set[tuple]]:
 def classify(score: int | None, stop_reason: str | None) -> str:
     if score is not None:
         return "ok"
+    if stop_reason in REFUSAL_REASONS:
+        return "refused"
     return "truncated" if stop_reason in TRUNCATION_REASONS else "parse_failed"
 
 
@@ -89,7 +94,7 @@ def one_call(provider: str, model: str, condition: str, meal: dict, run: int, pr
             status=classify(score, reply.stop_reason), text=reply.text, score=score,
             served_model=reply.served_model, stop_reason=reply.stop_reason,
             input_tokens=reply.input_tokens, output_tokens=reply.output_tokens,
-            thinking_blocks=reply.thinking_blocks,
+            thinking_blocks=reply.thinking_blocks, refusal_category=reply.refusal_category,
             latency_s=round(time.monotonic() - started, 3), attempts=attempt,
         )
         return record

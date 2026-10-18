@@ -78,6 +78,22 @@ def test_no_thinking_counts_zero(monkeypatch):
     assert call_anthropic("m", "p", None, 100).thinking_blocks == 0
 
 
+def test_refusal_records_the_reported_category(monkeypatch):
+    refused = SimpleNamespace(
+        content=[], model="served", stop_reason="refusal",
+        stop_details=SimpleNamespace(type="refusal", category="cyber", explanation="blocked"),
+        usage=SimpleNamespace(input_tokens=215, output_tokens=0),
+    )
+    fake_anthropic(monkeypatch, refused)
+    reply = call_anthropic("m", "p", None, 100)
+    assert reply.stop_reason == "refusal" and reply.refusal_category == "cyber" and reply.text == ""
+
+
+def test_no_stop_details_means_no_category(monkeypatch):
+    fake_anthropic(monkeypatch, response(TEXT))
+    assert call_anthropic("m", "p", None, 100).refusal_category is None
+
+
 def test_a_400_about_temperature_means_unsupported(monkeypatch):
     fake_anthropic(monkeypatch, error=FakeBadRequest("temperature: only the default value is allowed for this model"))
     with pytest.raises(TemperatureUnsupported):

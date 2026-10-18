@@ -9,8 +9,10 @@ from analyze import (  # noqa: E402
     generation_shift,
     latest_per_call,
     majority_vote_instability,
+    mark_refusals,
     output_prefix,
     per_meal,
+    refusals,
     voting_table,
     wilson_interval,
 )
@@ -124,6 +126,35 @@ def test_errors_are_dropped_where_the_model_rejected_temperature():
     latest = latest_per_call(df)
     assert sorted(latest["status"]) == ["error", "temperature_unsupported"]
     assert latest.loc[latest["status"] == "error", "model"].tolist() == ["old"]
+
+
+def _call(meal, status, score=None, stop_reason="end_turn", model="m"):
+    return {"provider": "a", "model": model, "condition": "default", "meal": meal, "category": "clear_bad",
+            "status": status, "score": score, "stop_reason": stop_reason}
+
+
+def test_old_parse_failures_with_a_refusal_stop_reason_become_refused():
+    df = pd.DataFrame([
+        _call("x", "parse_failed", stop_reason="refusal"),
+        _call("x", "parse_failed", stop_reason="end_turn"),
+        _call("x", "ok", score=90),
+    ])
+    assert mark_refusals(df)["status"].tolist() == ["refused", "parse_failed", "ok"]
+
+
+def test_refusals_are_counted_apart_from_parse_failures():
+    df = pd.DataFrame([_call("x", "ok", score=s) for s in (90, 95)] + [_call("x", "refused", stop_reason="refusal")])
+    row = per_meal(df, threshold=49.5).iloc[0]
+    assert row["n"] == 2 and row["refusals"] == 1 and row["parse_failures"] == 0
+
+
+def test_refusals_table_lists_meals_refused_on_every_run():
+    df = pd.DataFrame([_call("all", "refused", stop_reason="refusal") for _ in range(3)]
+                      + [_call("none", "ok", score=95)])
+    table = refusals(df)
+    assert table[["meal", "calls", "refused"]].values.tolist() == [["all", 3, 3]]
+    # A meal with no scored run has no per meal row, which is why the table exists.
+    assert per_meal(df, threshold=49.5)["meal"].tolist() == ["none"]
 
 
 @pytest.mark.parametrize("name, prefix", [

@@ -1,73 +1,73 @@
-provider,model,condition,meal,category,n,parse_failures,truncated,mean,sd,min,max,distinct_scores,modal_share,p_above,p_above_lo,p_above_hi,verdict_instability,distance_from_threshold
-anthropic,claude-haiku-4-5-20251001,default,a chicken Caesar salad,borderline,20,0,0,35.5,5.063,28,45,4,0.55,0.0,0.0,0.161,0.0,14.0
-anthropic,claude-haiku-4-5-20251001,default,a double bacon cheeseburger with fries,clear_bad,20,0,0,7.25,1.333,5,8,2,0.75,0.0,0.0,0.161,0.0,42.25
-anthropic,claude-haiku-4-5-20251001,default,a turkey sandwich with mayonnaise,borderline,20,0,0,27.55,4.43,18,35,4,0.45,0.0,0.0,0.161,0.0,21.95
-anthropic,claude-haiku-4-5-20251001,default,avocado toast on whole wheat bread,borderline,20,0,0,29.4,6.893,15,42,6,0.35,0.0,0.0,0.161,0.0,20.1
-anthropic,claude-haiku-4-5-20251001,default,deep fried fish and chips,clear_bad,20,0,0,7.9,1.997,5,15,3,0.8,0.0,0.0,0.161,0.0,41.6
-anthropic,claude-haiku-4-5-20251001,default,fried chicken,clear_bad,20,0,0,11.5,3.591,8,15,2,0.5,0.0,0.0,0.161,0.0,38.0
-anthropic,claude-haiku-4-5-20251001,default,grilled salmon with white rice,borderline,20,0,0,54.9,7.261,42,68,7,0.25,0.8,0.584,0.919,0.2,5.4
-anthropic,claude-haiku-4-5-20251001,default,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,85.45,2.964,82,88,3,0.55,1.0,0.839,1.0,0.0,35.95
-anthropic,claude-haiku-4-5-20251001,default,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,80.6,1.957,78,82,2,0.65,1.0,0.839,1.0,0.0,31.1
-anthropic,claude-haiku-4-5-20251001,default,scrambled eggs on toast,borderline,20,0,0,31.4,5.093,25,42,5,0.4,0.0,0.0,0.161,0.0,18.1
-anthropic,claude-haiku-4-5-20251001,default,spaghetti bolognese,borderline,20,0,0,24.2,4.456,18,35,5,0.45,0.0,0.0,0.161,0.0,25.3
-anthropic,claude-haiku-4-5-20251001,default,steamed vegetables with plain brown rice,clear_good,20,0,0,81.0,1.777,78,82,2,0.75,1.0,0.839,1.0,0.0,31.5
-anthropic,claude-haiku-4-5-20251001,t0,a chicken Caesar salad,borderline,20,0,0,42.0,0.0,42,42,1,1.0,0.0,0.0,0.161,0.0,7.5
-anthropic,claude-haiku-4-5-20251001,t0,a double bacon cheeseburger with fries,clear_bad,20,0,0,8.0,0.0,8,8,1,1.0,0.0,0.0,0.161,0.0,41.5
-anthropic,claude-haiku-4-5-20251001,t0,a turkey sandwich with mayonnaise,borderline,20,0,0,42.0,0.0,42,42,1,1.0,0.0,0.0,0.161,0.0,7.5
-anthropic,claude-haiku-4-5-20251001,t0,avocado toast on whole wheat bread,borderline,20,0,0,28.0,0.0,28,28,1,1.0,0.0,0.0,0.161,0.0,21.5
-anthropic,claude-haiku-4-5-20251001,t0,deep fried fish and chips,clear_bad,20,0,0,8.0,0.0,8,8,1,1.0,0.0,0.0,0.161,0.0,41.5
-anthropic,claude-haiku-4-5-20251001,t0,fried chicken,clear_bad,20,0,0,8.0,0.0,8,8,1,1.0,0.0,0.0,0.161,0.0,41.5
-anthropic,claude-haiku-4-5-20251001,t0,grilled salmon with white rice,borderline,20,0,0,42.0,0.0,42,42,1,1.0,0.0,0.0,0.161,0.0,7.5
-anthropic,claude-haiku-4-5-20251001,t0,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,82.0,0.0,82,82,1,1.0,1.0,0.839,1.0,0.0,32.5
-anthropic,claude-haiku-4-5-20251001,t0,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,82.0,0.0,82,82,1,1.0,1.0,0.839,1.0,0.0,32.5
-anthropic,claude-haiku-4-5-20251001,t0,scrambled eggs on toast,borderline,20,0,0,35.0,0.0,35,35,1,1.0,0.0,0.0,0.161,0.0,14.5
-anthropic,claude-haiku-4-5-20251001,t0,spaghetti bolognese,borderline,20,0,0,25.0,0.0,25,25,1,1.0,0.0,0.0,0.161,0.0,24.5
-anthropic,claude-haiku-4-5-20251001,t0,steamed vegetables with plain brown rice,clear_good,20,0,0,82.0,0.0,82,82,1,1.0,1.0,0.839,1.0,0.0,32.5
-anthropic,claude-haiku-5-5,default,a chicken Caesar salad,borderline,20,0,0,29.0,3.839,20,35,4,0.55,0.0,0.0,0.161,0.0,20.5
-anthropic,claude-haiku-5-5,default,a double bacon cheeseburger with fries,clear_bad,20,0,0,5.05,0.759,4,8,3,0.85,0.0,0.0,0.161,0.0,44.45
-anthropic,claude-haiku-5-5,default,a turkey sandwich with mayonnaise,borderline,20,0,0,46.5,6.509,35,60,6,0.3,0.4,0.219,0.613,0.4,3.0
-anthropic,claude-haiku-5-5,default,avocado toast on whole wheat bread,borderline,20,0,0,80.05,1.959,78,85,4,0.35,1.0,0.839,1.0,0.0,30.55
-anthropic,claude-haiku-5-5,default,deep fried fish and chips,clear_bad,20,0,0,6.95,1.638,5,10,4,0.4,0.0,0.0,0.161,0.0,42.55
-anthropic,claude-haiku-5-5,default,fried chicken,clear_bad,20,0,0,5.1,0.308,5,6,2,0.9,0.0,0.0,0.161,0.0,44.4
-anthropic,claude-haiku-5-5,default,grilled salmon with white rice,borderline,20,0,0,75.85,2.978,70,80,5,0.4,1.0,0.839,1.0,0.0,26.35
-anthropic,claude-haiku-5-5,default,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,90.6,1.142,88,92,3,0.6,1.0,0.839,1.0,0.0,41.1
-anthropic,claude-haiku-5-5,default,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,89.8,1.105,88,92,3,0.7,1.0,0.839,1.0,0.0,40.3
-anthropic,claude-haiku-5-5,default,scrambled eggs on toast,borderline,20,0,0,68.25,4.745,60,75,7,0.3,1.0,0.839,1.0,0.0,18.75
-anthropic,claude-haiku-5-5,default,spaghetti bolognese,borderline,20,0,0,47.0,6.156,40,55,4,0.3,0.4,0.219,0.613,0.4,2.5
-anthropic,claude-haiku-5-5,default,steamed vegetables with plain brown rice,clear_good,20,0,0,89.5,2.893,78,92,4,0.7,1.0,0.839,1.0,0.0,40.0
-anthropic,claude-sonnet-4-6,default,a chicken Caesar salad,borderline,20,0,0,34.35,3.99,30,45,4,0.4,0.0,0.0,0.161,0.0,15.15
-anthropic,claude-sonnet-4-6,default,a double bacon cheeseburger with fries,clear_bad,20,0,0,2.05,0.224,2,3,2,0.95,0.0,0.0,0.161,0.0,47.45
-anthropic,claude-sonnet-4-6,default,a turkey sandwich with mayonnaise,borderline,20,0,0,32.9,3.447,28,38,4,0.5,0.0,0.0,0.161,0.0,16.6
-anthropic,claude-sonnet-4-6,default,avocado toast on whole wheat bread,borderline,20,0,0,34.7,4.33,25,42,6,0.45,0.0,0.0,0.161,0.0,14.8
-anthropic,claude-sonnet-4-6,default,deep fried fish and chips,clear_bad,20,0,0,3.15,0.671,2,4,3,0.55,0.0,0.0,0.161,0.0,46.35
-anthropic,claude-sonnet-4-6,default,fried chicken,clear_bad,20,0,0,4.15,0.587,3,5,3,0.65,0.0,0.0,0.161,0.0,45.35
-anthropic,claude-sonnet-4-6,default,grilled salmon with white rice,borderline,20,0,0,58.05,8.864,35,68,9,0.25,0.85,0.64,0.948,0.15,8.55
-anthropic,claude-sonnet-4-6,default,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,92.1,0.308,92,93,2,0.9,1.0,0.839,1.0,0.0,42.6
-anthropic,claude-sonnet-4-6,default,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,90.5,0.889,90,92,2,0.75,1.0,0.839,1.0,0.0,41.0
-anthropic,claude-sonnet-4-6,default,scrambled eggs on toast,borderline,20,0,0,45.6,8.531,30,65,8,0.35,0.3,0.145,0.519,0.3,3.9
-anthropic,claude-sonnet-4-6,default,spaghetti bolognese,borderline,20,0,0,27.6,4.235,18,35,5,0.45,0.0,0.0,0.161,0.0,21.9
-anthropic,claude-sonnet-4-6,default,steamed vegetables with plain brown rice,clear_good,20,0,0,89.4,1.465,88,92,3,0.45,1.0,0.839,1.0,0.0,39.9
-anthropic,claude-sonnet-4-6,t0,a chicken Caesar salad,borderline,20,0,0,34.55,3.137,28,42,5,0.65,0.0,0.0,0.161,0.0,14.95
-anthropic,claude-sonnet-4-6,t0,a double bacon cheeseburger with fries,clear_bad,20,0,0,2.05,0.224,2,3,2,0.95,0.0,0.0,0.161,0.0,47.45
-anthropic,claude-sonnet-4-6,t0,a turkey sandwich with mayonnaise,borderline,20,0,0,32.55,3.268,25,35,4,0.6,0.0,0.0,0.161,0.0,16.95
-anthropic,claude-sonnet-4-6,t0,avocado toast on whole wheat bread,borderline,20,0,0,33.4,3.789,28,45,4,0.55,0.0,0.0,0.161,0.0,16.1
-anthropic,claude-sonnet-4-6,t0,deep fried fish and chips,clear_bad,20,0,0,3.3,0.47,3,4,2,0.7,0.0,0.0,0.161,0.0,46.2
-anthropic,claude-sonnet-4-6,t0,fried chicken,clear_bad,20,0,0,4.6,0.503,4,5,2,0.6,0.0,0.0,0.161,0.0,44.9
-anthropic,claude-sonnet-4-6,t0,grilled salmon with white rice,borderline,20,0,0,61.15,4.694,52,72,7,0.5,1.0,0.839,1.0,0.0,11.65
-anthropic,claude-sonnet-4-6,t0,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,92.05,0.224,92,93,2,0.95,1.0,0.839,1.0,0.0,42.55
-anthropic,claude-sonnet-4-6,t0,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,90.3,0.733,90,92,2,0.85,1.0,0.839,1.0,0.0,40.8
-anthropic,claude-sonnet-4-6,t0,scrambled eggs on toast,borderline,20,0,0,44.7,6.982,30,65,7,0.45,0.15,0.052,0.36,0.15,4.8
-anthropic,claude-sonnet-4-6,t0,spaghetti bolognese,borderline,20,0,0,26.75,3.508,20,35,5,0.4,0.0,0.0,0.161,0.0,22.75
-anthropic,claude-sonnet-4-6,t0,steamed vegetables with plain brown rice,clear_good,20,0,0,90.5,0.889,90,92,2,0.75,1.0,0.839,1.0,0.0,41.0
-anthropic,claude-sonnet-5-5,default,a chicken Caesar salad,borderline,20,0,0,47.85,3.528,45,55,4,0.55,0.45,0.258,0.658,0.45,1.65
-anthropic,claude-sonnet-5-5,default,a double bacon cheeseburger with fries,clear_bad,20,0,0,6.8,1.281,5,8,3,0.5,0.0,0.0,0.161,0.0,42.7
-anthropic,claude-sonnet-5-5,default,a turkey sandwich with mayonnaise,borderline,20,0,0,68.1,2.049,65,72,4,0.55,1.0,0.839,1.0,0.0,18.6
-anthropic,claude-sonnet-5-5,default,avocado toast on whole wheat bread,borderline,20,0,0,70.85,2.084,68,75,4,0.6,1.0,0.839,1.0,0.0,21.35
-anthropic,claude-sonnet-5-5,default,deep fried fish and chips,clear_bad,20,0,0,10.4,1.536,8,12,3,0.4,0.0,0.0,0.161,0.0,39.1
-anthropic,claude-sonnet-5-5,default,fried chicken,clear_bad,20,0,0,11.5,0.889,10,12,2,0.75,0.0,0.0,0.161,0.0,38.0
-anthropic,claude-sonnet-5-5,default,grilled salmon with white rice,borderline,20,0,0,78.35,1.663,75,80,5,0.4,1.0,0.839,1.0,0.0,28.85
-anthropic,claude-sonnet-5-5,default,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,90.5,0.889,90,92,2,0.75,1.0,0.839,1.0,0.0,41.0
-anthropic,claude-sonnet-5-5,default,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,92.1,0.641,90,93,3,0.75,1.0,0.839,1.0,0.0,42.6
-anthropic,claude-sonnet-5-5,default,scrambled eggs on toast,borderline,20,0,0,67.45,1.638,62,70,5,0.75,1.0,0.839,1.0,0.0,17.95
-anthropic,claude-sonnet-5-5,default,spaghetti bolognese,borderline,20,0,0,56.85,3.15,50,62,5,0.55,1.0,0.839,1.0,0.0,7.35
-anthropic,claude-sonnet-5-5,default,steamed vegetables with plain brown rice,clear_good,20,0,0,85.05,1.731,82,88,5,0.55,1.0,0.839,1.0,0.0,35.55
+provider,model,condition,meal,category,n,parse_failures,truncated,refusals,mean,sd,min,max,distinct_scores,modal_share,p_above,p_above_lo,p_above_hi,verdict_instability,distance_from_threshold
+anthropic,claude-haiku-4-5-20251001,default,a chicken Caesar salad,borderline,20,0,0,0,35.5,5.063,28,45,4,0.55,0.0,0.0,0.161,0.0,14.0
+anthropic,claude-haiku-4-5-20251001,default,a double bacon cheeseburger with fries,clear_bad,20,0,0,0,7.25,1.333,5,8,2,0.75,0.0,0.0,0.161,0.0,42.25
+anthropic,claude-haiku-4-5-20251001,default,a turkey sandwich with mayonnaise,borderline,20,0,0,0,27.55,4.43,18,35,4,0.45,0.0,0.0,0.161,0.0,21.95
+anthropic,claude-haiku-4-5-20251001,default,avocado toast on whole wheat bread,borderline,20,0,0,0,29.4,6.893,15,42,6,0.35,0.0,0.0,0.161,0.0,20.1
+anthropic,claude-haiku-4-5-20251001,default,deep fried fish and chips,clear_bad,20,0,0,0,7.9,1.997,5,15,3,0.8,0.0,0.0,0.161,0.0,41.6
+anthropic,claude-haiku-4-5-20251001,default,fried chicken,clear_bad,20,0,0,0,11.5,3.591,8,15,2,0.5,0.0,0.0,0.161,0.0,38.0
+anthropic,claude-haiku-4-5-20251001,default,grilled salmon with white rice,borderline,20,0,0,0,54.9,7.261,42,68,7,0.25,0.8,0.584,0.919,0.2,5.4
+anthropic,claude-haiku-4-5-20251001,default,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,0,85.45,2.964,82,88,3,0.55,1.0,0.839,1.0,0.0,35.95
+anthropic,claude-haiku-4-5-20251001,default,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,0,80.6,1.957,78,82,2,0.65,1.0,0.839,1.0,0.0,31.1
+anthropic,claude-haiku-4-5-20251001,default,scrambled eggs on toast,borderline,20,0,0,0,31.4,5.093,25,42,5,0.4,0.0,0.0,0.161,0.0,18.1
+anthropic,claude-haiku-4-5-20251001,default,spaghetti bolognese,borderline,20,0,0,0,24.2,4.456,18,35,5,0.45,0.0,0.0,0.161,0.0,25.3
+anthropic,claude-haiku-4-5-20251001,default,steamed vegetables with plain brown rice,clear_good,20,0,0,0,81.0,1.777,78,82,2,0.75,1.0,0.839,1.0,0.0,31.5
+anthropic,claude-haiku-4-5-20251001,t0,a chicken Caesar salad,borderline,20,0,0,0,42.0,0.0,42,42,1,1.0,0.0,0.0,0.161,0.0,7.5
+anthropic,claude-haiku-4-5-20251001,t0,a double bacon cheeseburger with fries,clear_bad,20,0,0,0,8.0,0.0,8,8,1,1.0,0.0,0.0,0.161,0.0,41.5
+anthropic,claude-haiku-4-5-20251001,t0,a turkey sandwich with mayonnaise,borderline,20,0,0,0,42.0,0.0,42,42,1,1.0,0.0,0.0,0.161,0.0,7.5
+anthropic,claude-haiku-4-5-20251001,t0,avocado toast on whole wheat bread,borderline,20,0,0,0,28.0,0.0,28,28,1,1.0,0.0,0.0,0.161,0.0,21.5
+anthropic,claude-haiku-4-5-20251001,t0,deep fried fish and chips,clear_bad,20,0,0,0,8.0,0.0,8,8,1,1.0,0.0,0.0,0.161,0.0,41.5
+anthropic,claude-haiku-4-5-20251001,t0,fried chicken,clear_bad,20,0,0,0,8.0,0.0,8,8,1,1.0,0.0,0.0,0.161,0.0,41.5
+anthropic,claude-haiku-4-5-20251001,t0,grilled salmon with white rice,borderline,20,0,0,0,42.0,0.0,42,42,1,1.0,0.0,0.0,0.161,0.0,7.5
+anthropic,claude-haiku-4-5-20251001,t0,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,0,82.0,0.0,82,82,1,1.0,1.0,0.839,1.0,0.0,32.5
+anthropic,claude-haiku-4-5-20251001,t0,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,0,82.0,0.0,82,82,1,1.0,1.0,0.839,1.0,0.0,32.5
+anthropic,claude-haiku-4-5-20251001,t0,scrambled eggs on toast,borderline,20,0,0,0,35.0,0.0,35,35,1,1.0,0.0,0.0,0.161,0.0,14.5
+anthropic,claude-haiku-4-5-20251001,t0,spaghetti bolognese,borderline,20,0,0,0,25.0,0.0,25,25,1,1.0,0.0,0.0,0.161,0.0,24.5
+anthropic,claude-haiku-4-5-20251001,t0,steamed vegetables with plain brown rice,clear_good,20,0,0,0,82.0,0.0,82,82,1,1.0,1.0,0.839,1.0,0.0,32.5
+anthropic,claude-haiku-5-5,default,a chicken Caesar salad,borderline,20,0,0,0,29.0,3.839,20,35,4,0.55,0.0,0.0,0.161,0.0,20.5
+anthropic,claude-haiku-5-5,default,a double bacon cheeseburger with fries,clear_bad,20,0,0,0,5.05,0.759,4,8,3,0.85,0.0,0.0,0.161,0.0,44.45
+anthropic,claude-haiku-5-5,default,a turkey sandwich with mayonnaise,borderline,20,0,0,0,46.5,6.509,35,60,6,0.3,0.4,0.219,0.613,0.4,3.0
+anthropic,claude-haiku-5-5,default,avocado toast on whole wheat bread,borderline,20,0,0,0,80.05,1.959,78,85,4,0.35,1.0,0.839,1.0,0.0,30.55
+anthropic,claude-haiku-5-5,default,deep fried fish and chips,clear_bad,20,0,0,0,6.95,1.638,5,10,4,0.4,0.0,0.0,0.161,0.0,42.55
+anthropic,claude-haiku-5-5,default,fried chicken,clear_bad,20,0,0,0,5.1,0.308,5,6,2,0.9,0.0,0.0,0.161,0.0,44.4
+anthropic,claude-haiku-5-5,default,grilled salmon with white rice,borderline,20,0,0,0,75.85,2.978,70,80,5,0.4,1.0,0.839,1.0,0.0,26.35
+anthropic,claude-haiku-5-5,default,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,0,90.6,1.142,88,92,3,0.6,1.0,0.839,1.0,0.0,41.1
+anthropic,claude-haiku-5-5,default,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,0,89.8,1.105,88,92,3,0.7,1.0,0.839,1.0,0.0,40.3
+anthropic,claude-haiku-5-5,default,scrambled eggs on toast,borderline,20,0,0,0,68.25,4.745,60,75,7,0.3,1.0,0.839,1.0,0.0,18.75
+anthropic,claude-haiku-5-5,default,spaghetti bolognese,borderline,20,0,0,0,47.0,6.156,40,55,4,0.3,0.4,0.219,0.613,0.4,2.5
+anthropic,claude-haiku-5-5,default,steamed vegetables with plain brown rice,clear_good,20,0,0,0,89.5,2.893,78,92,4,0.7,1.0,0.839,1.0,0.0,40.0
+anthropic,claude-sonnet-4-6,default,a chicken Caesar salad,borderline,20,0,0,0,34.35,3.99,30,45,4,0.4,0.0,0.0,0.161,0.0,15.15
+anthropic,claude-sonnet-4-6,default,a double bacon cheeseburger with fries,clear_bad,20,0,0,0,2.05,0.224,2,3,2,0.95,0.0,0.0,0.161,0.0,47.45
+anthropic,claude-sonnet-4-6,default,a turkey sandwich with mayonnaise,borderline,20,0,0,0,32.9,3.447,28,38,4,0.5,0.0,0.0,0.161,0.0,16.6
+anthropic,claude-sonnet-4-6,default,avocado toast on whole wheat bread,borderline,20,0,0,0,34.7,4.33,25,42,6,0.45,0.0,0.0,0.161,0.0,14.8
+anthropic,claude-sonnet-4-6,default,deep fried fish and chips,clear_bad,20,0,0,0,3.15,0.671,2,4,3,0.55,0.0,0.0,0.161,0.0,46.35
+anthropic,claude-sonnet-4-6,default,fried chicken,clear_bad,20,0,0,0,4.15,0.587,3,5,3,0.65,0.0,0.0,0.161,0.0,45.35
+anthropic,claude-sonnet-4-6,default,grilled salmon with white rice,borderline,20,0,0,0,58.05,8.864,35,68,9,0.25,0.85,0.64,0.948,0.15,8.55
+anthropic,claude-sonnet-4-6,default,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,0,92.1,0.308,92,93,2,0.9,1.0,0.839,1.0,0.0,42.6
+anthropic,claude-sonnet-4-6,default,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,0,90.5,0.889,90,92,2,0.75,1.0,0.839,1.0,0.0,41.0
+anthropic,claude-sonnet-4-6,default,scrambled eggs on toast,borderline,20,0,0,0,45.6,8.531,30,65,8,0.35,0.3,0.145,0.519,0.3,3.9
+anthropic,claude-sonnet-4-6,default,spaghetti bolognese,borderline,20,0,0,0,27.6,4.235,18,35,5,0.45,0.0,0.0,0.161,0.0,21.9
+anthropic,claude-sonnet-4-6,default,steamed vegetables with plain brown rice,clear_good,20,0,0,0,89.4,1.465,88,92,3,0.45,1.0,0.839,1.0,0.0,39.9
+anthropic,claude-sonnet-4-6,t0,a chicken Caesar salad,borderline,20,0,0,0,34.55,3.137,28,42,5,0.65,0.0,0.0,0.161,0.0,14.95
+anthropic,claude-sonnet-4-6,t0,a double bacon cheeseburger with fries,clear_bad,20,0,0,0,2.05,0.224,2,3,2,0.95,0.0,0.0,0.161,0.0,47.45
+anthropic,claude-sonnet-4-6,t0,a turkey sandwich with mayonnaise,borderline,20,0,0,0,32.55,3.268,25,35,4,0.6,0.0,0.0,0.161,0.0,16.95
+anthropic,claude-sonnet-4-6,t0,avocado toast on whole wheat bread,borderline,20,0,0,0,33.4,3.789,28,45,4,0.55,0.0,0.0,0.161,0.0,16.1
+anthropic,claude-sonnet-4-6,t0,deep fried fish and chips,clear_bad,20,0,0,0,3.3,0.47,3,4,2,0.7,0.0,0.0,0.161,0.0,46.2
+anthropic,claude-sonnet-4-6,t0,fried chicken,clear_bad,20,0,0,0,4.6,0.503,4,5,2,0.6,0.0,0.0,0.161,0.0,44.9
+anthropic,claude-sonnet-4-6,t0,grilled salmon with white rice,borderline,20,0,0,0,61.15,4.694,52,72,7,0.5,1.0,0.839,1.0,0.0,11.65
+anthropic,claude-sonnet-4-6,t0,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,0,92.05,0.224,92,93,2,0.95,1.0,0.839,1.0,0.0,42.55
+anthropic,claude-sonnet-4-6,t0,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,0,90.3,0.733,90,92,2,0.85,1.0,0.839,1.0,0.0,40.8
+anthropic,claude-sonnet-4-6,t0,scrambled eggs on toast,borderline,20,0,0,0,44.7,6.982,30,65,7,0.45,0.15,0.052,0.36,0.15,4.8
+anthropic,claude-sonnet-4-6,t0,spaghetti bolognese,borderline,20,0,0,0,26.75,3.508,20,35,5,0.4,0.0,0.0,0.161,0.0,22.75
+anthropic,claude-sonnet-4-6,t0,steamed vegetables with plain brown rice,clear_good,20,0,0,0,90.5,0.889,90,92,2,0.75,1.0,0.839,1.0,0.0,41.0
+anthropic,claude-sonnet-5-5,default,a chicken Caesar salad,borderline,20,0,0,0,47.85,3.528,45,55,4,0.55,0.45,0.258,0.658,0.45,1.65
+anthropic,claude-sonnet-5-5,default,a double bacon cheeseburger with fries,clear_bad,20,0,0,0,6.8,1.281,5,8,3,0.5,0.0,0.0,0.161,0.0,42.7
+anthropic,claude-sonnet-5-5,default,a turkey sandwich with mayonnaise,borderline,20,0,0,0,68.1,2.049,65,72,4,0.55,1.0,0.839,1.0,0.0,18.6
+anthropic,claude-sonnet-5-5,default,avocado toast on whole wheat bread,borderline,20,0,0,0,70.85,2.084,68,75,4,0.6,1.0,0.839,1.0,0.0,21.35
+anthropic,claude-sonnet-5-5,default,deep fried fish and chips,clear_bad,20,0,0,0,10.4,1.536,8,12,3,0.4,0.0,0.0,0.161,0.0,39.1
+anthropic,claude-sonnet-5-5,default,fried chicken,clear_bad,20,0,0,0,11.5,0.889,10,12,2,0.75,0.0,0.0,0.161,0.0,38.0
+anthropic,claude-sonnet-5-5,default,grilled salmon with white rice,borderline,20,0,0,0,78.35,1.663,75,80,5,0.4,1.0,0.839,1.0,0.0,28.85
+anthropic,claude-sonnet-5-5,default,grilled skinless chicken breast with steamed broccoli,clear_good,20,0,0,0,90.5,0.889,90,92,2,0.75,1.0,0.839,1.0,0.0,41.0
+anthropic,claude-sonnet-5-5,default,oatmeal made with skim milk and topped with berries,clear_good,20,0,0,0,92.1,0.641,90,93,3,0.75,1.0,0.839,1.0,0.0,42.6
+anthropic,claude-sonnet-5-5,default,scrambled eggs on toast,borderline,20,0,0,0,67.45,1.638,62,70,5,0.75,1.0,0.839,1.0,0.0,17.95
+anthropic,claude-sonnet-5-5,default,spaghetti bolognese,borderline,20,0,0,0,56.85,3.15,50,62,5,0.55,1.0,0.839,1.0,0.0,7.35
+anthropic,claude-sonnet-5-5,default,steamed vegetables with plain brown rice,clear_good,20,0,0,0,85.05,1.731,82,88,5,0.55,1.0,0.839,1.0,0.0,35.55
